@@ -15,7 +15,7 @@ def add(
     style: str,
     flavor: int = typer.Option(...),
     image: int = typer.Option(...),
-    cost: int = typer.Option(...)
+    cost: int = typer.Option(...),
 ):
     """Adds a new beer to database."""
     if add_beer_to_database(name, style, flavor, image, cost):
