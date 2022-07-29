@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ['3.8', '3.10']
+        python-version: ["3.8", "3.10"]
         os: [ubuntu-latest]
     runs-on: ${{matrix.os}}
     steps:
@@ -26,16 +26,16 @@ jobs:
 
       - name: Install Project
         run: poetry install
-      
+
       - name: Look for style errors
         run: poetry run flake8 beerlog
-      
+
       - name: Look for auto format errors
         run: poetry run black -l 79 --check --diff beerlog tests
-      
+
       - name: Run tests
         run: poetry run pytest -v --junitxml=test-result.xml
-      
+
       - name: publish junit results
         uses: EnricoMi/publish-unit-test-result-action@v1
         if: always()
@@ -48,41 +48,40 @@ jobs:
     if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v2
-  
-  #    - name: Configurando as credenciais da AWS
-  #      uses: aws-actions/configure-aws-credentials@v1
-  #      with:
-  #        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #        aws-region: eu-central-1
-  
+
+      #    - name: Configurando as credenciais da AWS
+      #      uses: aws-actions/configure-aws-credentials@v1
+      #      with:
+      #        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #        aws-region: eu-central-1
+
       - name: Login no Docker Hub
         uses: actions-hub/docker/login@master
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  
+
       - name: Build image
         run: docker build -t hebertviana/beerlog:2.0 --file docker/Dockerfile .
-  
+
       - name: Push image
         uses: actions-hub/docker@master
         with:
           args: push hebertviana/beerlog:1.1
-  
-  #    - name: Deploy app on kubernets
-  #      uses: kodermax/kubectl-aws-eks@master
-  #      env: 
-  #        RELEASE_IMAGE: hebertviana/beerlog:1.1
-  #        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-  #      with:
-  #        args: appl -f kubernetes/deployment.yaml --record
-  #
-  #    - name: Deploy service app on kubernets
-  #      uses: kodermax/kubectl-aws-eks@master
-  #      env: 
-  #        RELEASE_IMAGE: hebertviana/beerlog:1.1
-  #        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-  #      with:
-  #        args: appl -f kubernetes/service.yaml --record
-  
+
+    #    - name: Deploy app on kubernets
+    #      uses: kodermax/kubectl-aws-eks@master
+    #      env:
+    #        RELEASE_IMAGE: hebertviana/beerlog:1.1
+    #        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+    #      with:
+    #        args: appl -f kubernetes/deployment.yaml --record
+    #
+    #    - name: Deploy service app on kubernets
+    #      uses: kodermax/kubectl-aws-eks@master
+    #      env:
+    #        RELEASE_IMAGE: hebertviana/beerlog:1.1
+    #        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+    #      with:
+    #        args: appl -f kubernetes/service.yaml --record
