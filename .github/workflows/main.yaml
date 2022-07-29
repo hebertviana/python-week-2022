@@ -63,7 +63,7 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build image
-        run: docker build -t hebertviana/beerlog:2.0 --file docker/Dockerfile .
+        run: docker build -t hebertviana/beerlog:1.1 --file docker/Dockerfile .
 
       - name: Push image
         uses: actions-hub/docker@master
